@@ -368,28 +368,183 @@ axis(4)
 
 -----------------CODIGO 3--------------------------------------------------
 
+---
+title: "DISCRETAS 3"
+author: "BUENDIA CAMACHO DANA PAOLA"
+date: "2025-09-20"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+Autos_familia <- c(2,1,0,0,1,1,0,0,3,3,1,0,1,1,1,0,1,1,3,2,
+                   1,2,1,0,1,1,2,1,1,2,1,1,0,1,0,1,0,1,1,1,
+                   2,0,0,1,0,1,2,2,0,0,1,1,0,1,0,1,0,1,1,2,
+                   2,1,2,1,2,1,0,0,0,0,0,3,3,1)
+length(Autos_familia)  # Verificar total de datos
+```
+
+
+```{r}
+summary(Autos_familia)
+```
+
+
+```{r}
+autos_ord <- sort(Autos_familia); autos_ord
+cte <- floor(length(Autos_familia) / 10) # tamaño para deciles
+cte
+```
+
+
+```{r}
+indices <- 1:10; indices
+t <- cte * indices; t
+```
+
+
+```{r}
+mis_deciles <- autos_ord[t]; mis_deciles
+cuantiles <- quantile(Autos_familia)
+cuantiles
+
+Q1 <- cuantiles[2]; Q1
+Q2 <- cuantiles[3]; Q2
+Q3 <- cuantiles[4]; Q3
+```
+
+
+```{r}
+x_media <- mean(Autos_familia); x_media
+mi_min <- min(Autos_familia); mi_min
+mi_max <- max(Autos_familia); mi_max
+varianza <- var(Autos_familia); varianza
+DesvEst <- sd(Autos_familia); DesvEst
+```
+
+
+```{r}
+plot(
+  Autos_familia,
+  main = "Gráfica Autos por Familia",
+  xlab = "Índice de Familias",
+  ylab = "Número de Autos",
+  col = "blue",
+  pch = 19,
+  cex = 0.5,
+  cex.main = 1.5,
+  cex.lab = 1.2,
+  col.main = "red"
+)
+
+legend(
+  "topright",
+  legend = c(mi_min, mi_max),
+  pch = 17,
+  col = c("purple", "orange"),
+  pt.cex = 1.5,
+  cex = 0.7,
+  bty = "n"
+)
+
+abline(h = x_media, col = "red", lwd = 1, lty = 2)      # Media
+abline(h = Q2, col = "lightgreen", lwd = 1, lty = 3)     # Mediana
+abline(h = mis_deciles, col = "lightgray", lty = 1.5)    # Deciles
+
+points(which.min(Autos_familia), min(Autos_familia), col = "purple", pch = 17, cex = 1.5)
+points(which.max(Autos_familia), max(Autos_familia), col = "orange", pch = 17, cex = 1.5)
+```
+
+
+```{r}
+nbreaks = 4
+miscolores <- rainbow(10, 0.85)
+h <- hist(Autos_familia, breaks = nbreaks, col = miscolores,
+          main = 'Número de Autos por Familia',
+          xlab = "Autos",
+          ylab = "Frecuencia")
+
+text(h$mids, h$counts, labels = h$counts, pos = 3, cex = 0.8, col = "black")
+
+legend(
+  "topright",
+  legend = h$counts,
+  fill = miscolores,
+  col = miscolores,
+  pt.cex = 1.5,
+  cex = 0.7,
+  bty = "n"
+)
+```
 
 
 
 
+```{r}
+h2 <- hist(Autos_familia,
+           breaks = nbreaks,
+           col = miscolores,
+           main = 'Distribución Porcentual de Autos',
+           xlab = "Autos",
+           ylab = "Porcentaje",
+           ylim = c(0, max(h$density)*1.5),
+           probability = TRUE)
+
+porcentajes <- h2$counts / sum(h2$counts) * 100
+
+text(h2$mids,
+     h2$density,
+     labels = paste0(round(porcentajes, 1), "%"),
+     pos = 3,
+     cex = 0.8,
+     col = "black")
+
+legend(
+  "topright",
+  legend = paste0(round(porcentajes, 1), "%"),
+  fill = miscolores,
+  cex = 0.5,
+  bty = "n"
+)
+```
 
 
+```{r}
+intervalos <- cut(Autos_familia, breaks = nbreaks); intervalos
+tabla <- table(intervalos); tabla
+porcentajes <- round(prop.table(tabla) * 100, 1); porcentajes
+
+pie(tabla,
+    main = "Porcentaje de Autos por Familia",
+    col = rainbow(length(tabla)),
+    labels = paste0(porcentajes, "%"))
+```
 
 
+```{r}
+h <- hist(Autos_familia, breaks = nbreaks, plot = FALSE)
 
+hist(Autos_familia,
+     breaks = nbreaks,
+     col = "pink",
+     main = "Histograma y Ojiva (%)",
+     xlab = "Número de Autos",
+     ylab = "Frecuencia")
 
+freq_acum_pct <- cumsum(h$counts) / sum(h$counts) * 100
+x_vals <- h$breaks[-1]
 
-
-
-
-
-
-
-
-
-
-
-
+par(new = TRUE)
+plot(x_vals, freq_acum_pct,
+     type = "o", pch = 19, lwd = 2, col = "red",
+     axes = FALSE, xlab = "", ylab = "",
+     xlim = range(h$breaks), ylim = c(0, 100))
+axis(4)
+```
 
 
 ---------------------CODIGO 4----------------------------------
